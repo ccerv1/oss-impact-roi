@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gitcoin and Giveth Project Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<div>
+    <h1>Gitcoin and Giveth Project Dashboard</h1>
+    <form method="GET">
+        <label for="project">Select a project:</label>
+        <select name="project" id="project">
+            {% for project_name in project_names %}
+            <option value="{{ project_name }}">{{ project_name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if selected_project %}
+    <h2>Project: {{ selected_project }}</h2>
+    <div>
+        <h3>Commits</h3>
+        <div id="commits"></div>
+    </div>
+    <div>
+        <h3>Funding</h3>
+        <div id="funding"></div>
+    </div>
+    <script>
+        var commits_data = {{ commits_data|safe }};
+        var funding_data = {{ funding_data|safe }};
+
+        var commits_layout = {
+            title: "Commits",
+            xaxis: {
+                title: "Time",
+                type: "date",
+                tickformat: "%Y-%m-%d"
+            },
+            yaxis: {
+                title: "Number of Commits"
+            }
+        };
+
+        var funding_layout = {
+            title: "Funding",
+            xaxis: {
+                title: "Time",
+                type: "date",
+                tickformat: "%Y-%m-%d"
+            },
+            yaxis: {
+                title: "Funding Amount (USD)"
+            }
+        };
+
+        Plotly.newPlot('commits', commits_data, commits_layout);
+        Plotly.newPlot('funding', funding_data, funding_layout);
+    </script>
+    {% endif %}
+</div>
+</body>
+</html>

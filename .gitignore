@@ -1,0 +1,10 @@
+# ignore local storage artifacts
+.env
+__pycache__/
+.DS_Store
+*.csv
+*.pickle
+*.ipynb
+.ipynb_checkpoints/
+data/github/*.json
+data/ledgers/*.csv
