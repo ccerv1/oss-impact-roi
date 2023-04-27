@@ -7,6 +7,7 @@ import yaml
 
 from scripts.retrieve_repos import retrieve_repos
 from scripts.github_queries import get_data_for_repos
+from scripts.retrieve_wallet_history import retrieve_wallet_history
 
 
 START, END = '2022-01-01T00:00:00Z', '2023-04-22T00:00:00Z'
@@ -42,15 +43,13 @@ def download_wallet_history():
             if len(address) != 42:
                 print(f"{project_name} - {address} is not a valid Ethereum address")
                 continue
-            try:
-                retrieve_wallet_history(project_name, address)
-            except:
-                print(f"Encountered an error with: {project_name} - {address}.")
+            retrieve_wallet_history(project_name, address)
         
 
 if __name__ == '__main__':
     load_dotenv()
+    download_wallet_history()
     token = os.getenv('GITHUB_TOKEN')
     populate_data(token)
-    #download_wallet_history()
+    
 

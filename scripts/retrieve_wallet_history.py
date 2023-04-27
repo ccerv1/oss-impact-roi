@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import os
 import time
 from selenium import webdriver
@@ -8,46 +9,57 @@ from selenium.webdriver.support.ui import WebDriverWait
 import shutil
 import yaml
 
-DOWNLOAD_DIR = '/Users/cerv1/Dropbox/Hypercerts/oss-impact-roi/'
+
+load_dotenv()
+DOWNLOAD_DIR = os.getenv('LOCAL_PATH')
+STORAGE_DIR = "data/ledgers"
+SLEEP = 5
+MAX_TRIES = 5
 
 
-def download_zerion_history(driver, project_name, wallet_address, override=False):
-    destination = f'data/ledgers/{project_name}-{wallet_address}.csv'
+def data_already_exists(project_name, wallet_address):
 
-    # Check if the file already exists and override is not turned on
-    if os.path.exists(destination) and not override:
-        print(f"File for {project_name} - {wallet_address} already exists. Skipping download.")
-        return
+    data_file = f'{STORAGE_DIR}/{project_name}-{wallet_address}.csv'
+    return os.path.isfile(data_file)
 
+
+def download_zerion_history(driver, project_name, wallet_address):
+
+    destination = f'{STORAGE_DIR}/{project_name}-{wallet_address}.csv'
     url = f'https://app.zerion.io/{wallet_address}/history'
+    
     driver.get(url)
     print(f"Loading Zerion for {project_name}")
-    time.sleep(5) # wait for page to load    
+    time.sleep(SLEEP) # wait for page to load    
     try:
         accept_button = driver.find_element(By.XPATH, "//*[contains(text(),'Accept')]/ancestor::button")
         accept_button.click()
-        time.sleep(5) # wait for cookies to be accepted
+        time.sleep(SLEEP) # wait for cookies to be accepted
     except:
-        pass # cookies popup not found, ignore
+        pass
 
-    button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[contains(.,'Download CSV')]"))
-    )
-    button.click()
+    try:
+        button = WebDriverWait(driver, SLEEP*2).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(.,'Download CSV')]"))
+        )
+        button.click()
+    except:
+        print("Zerion appears unable to support analytics for this address:", url)
+        return
 
     notFound = True
-    count = 0
+    tries = 0
     while notFound:
     
-        time.sleep(5) # wait for download to complete
-        count += 1
+        time.sleep(SLEEP) # wait for download to complete
+        tries += 1
         # Find the downloaded file and move it to the correct destination
         downloaded_file = max([os.path.join(DOWNLOAD_DIR, f) for f in os.listdir(DOWNLOAD_DIR)], key=os.path.getctime)
         print(downloaded_file)
         if wallet_address.lower() in downloaded_file.lower():
             notFound = False
 
-        if count == 5:
+        if tries == MAX_TRIES:
             print(f"Unable to find a history for {project_name} at {url}.")
             return
     
@@ -56,10 +68,16 @@ def download_zerion_history(driver, project_name, wallet_address, override=False
 
 
 def retrieve_wallet_history(project_name, wallet_address, override=False):
+
+    if not override:
+        if data_already_exists(project_name, wallet_address):
+            print(f"File for {project_name} - {wallet_address} already exists. Skipping download.")
+            return
+
     chrome_options = Options()
     chrome_options.add_argument('--headless')
     driver = webdriver.Chrome(options=chrome_options)
-    download_zerion_history(driver, project_name, wallet_address, override)
+    download_zerion_history(driver, project_name, wallet_address)
     driver.quit()
 
 if __name__ == '__main__':
