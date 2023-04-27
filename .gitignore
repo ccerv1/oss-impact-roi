@@ -6,5 +6,5 @@ __pycache__/
 *.pickle
 *.ipynb
 .ipynb_checkpoints/
-data/github/*.json
-data/ledgers/*.csv
+data/github/
+data/ledgers/
