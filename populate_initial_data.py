@@ -6,7 +6,7 @@ import re
 import yaml
 
 from scripts.retrieve_repos import retrieve_repos
-from scripts.utils import get_data_for_repos
+from scripts.github_queries import get_data_for_repos
 
 
 START, END = '2022-01-01T00:00:00Z', '2023-04-22T00:00:00Z'
