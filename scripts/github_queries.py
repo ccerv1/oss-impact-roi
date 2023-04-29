@@ -1,7 +1,7 @@
 import json
 import os
 import requests
-from scripts.querystrings import query_commits, query_pull_requests
+from scripts.querystrings import *
 
 DATA_PATH = "data/github"
 
@@ -18,6 +18,12 @@ QUERIES = [
         "func": query_pull_requests,
         "directory": "PRs",
         "date_key": "mergedAt"
+    },
+    {
+        "name": "issues",
+        "func": query_issues,
+        "directory": "issues",
+        "date_key": "createdAt"
     }
 ]
 

@@ -76,3 +76,37 @@ def query_pull_requests(owner, name, first, after, since, until):
           }}
         }}
     '''
+
+
+def query_issues(owner, name, first, after, since, until):
+    return f'''
+        {{
+          search(
+            query: "repo:{owner}/{name} is:issue -reason:NOT_PLANNED created:{since}..{until}" 
+            first: {first}
+            after: {after}
+            type: ISSUE
+          ) {{
+            pageInfo {{
+              hasNextPage
+              endCursor
+            }}
+            nodes {{
+              ... on Issue {{
+                title
+                url
+                createdAt
+                state
+                stateReason
+                closedAt
+                comments {{
+                  totalCount
+                }}
+                author {{
+                  login
+                }}
+              }}
+            }}
+          }}
+        }}
+    '''    

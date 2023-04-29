@@ -12,7 +12,7 @@ import yaml
 
 load_dotenv()
 DOWNLOAD_DIR = os.getenv('LOCAL_PATH')
-STORAGE_DIR = "data/ledgers"
+STORAGE_DIR = "data/ledgers/zerion"
 SLEEP = 5
 MAX_TRIES = 5
 
