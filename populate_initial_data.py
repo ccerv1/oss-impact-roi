@@ -87,8 +87,8 @@ def store_wallet_stats():
 
 if __name__ == '__main__':
     load_dotenv()    
-    # token = os.getenv('GITHUB_TOKEN')
-    # populate_data(token)
+    token = os.getenv('GITHUB_TOKEN')
+    populate_data(token)
     download_wallet_history()
     store_wallet_stats()
     
