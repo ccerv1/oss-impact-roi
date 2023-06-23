@@ -1,3 +1,9 @@
+# ⚠️ DEPRECATED ⚠️
+
+Head over to [hypercerts/os-observer](https://github.com/hypercerts-org/hypercerts/tree/main/os-observer) for the active project repo.
+
+---
+
 # Open Source Impact ROI
 
 ## Introduction
